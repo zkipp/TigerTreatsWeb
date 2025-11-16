@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tiger Treats</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- HEADER -->
+    <header class="app-header">
+      <h1>🐯 Tiger Treats</h1>
+      <button id="teacherButton" class="teacher-button">
+        Teacher
+      </button>
+    </header>
+
+    <!-- TEACHER PANEL (CSV + RESET, PIN PROTECTED) -->
+    <section id="teacherPanel" class="teacher-panel hidden">
+      <div>
+        <label class="teacher-label">
+          Load Orders CSV:
+          <input type="file" id="csvInput" accept=".csv" />
+        </label>
+        <p class="teacher-hint">
+          Format: <code>Staff,Item1,Item2,Item3,...</code>
+        </p>
+      </div>
+      <button id="resetButton" class="reset-button">
+        Reset All Orders
+      </button>
+    </section>
+
+    <!-- STAFF LIST VIEW -->
+    <main id="staffListView" class="view">
+      <div id="staffCards" class="staff-card-container"></div>
+    </main>
+
+    <!-- ORDER DETAIL VIEW -->
+    <main id="orderDetailView" class="view hidden">
+      <header class="detail-header">
+        <button id="backButton" class="back-button">← Back</button>
+        <h2 id="detailStaffName"></h2>
+      </header>
+
+      <section id="itemsGrid" class="items-grid"></section>
+    </main>
+
+    <!-- Confetti overlay -->
+    <div id="confettiContainer" class="confetti-container hidden"></div>
+
+    <!-- Completed message -->
+    <div id="completedBanner" class="completed-banner hidden">
+      ORDER COMPLETED! GREAT JOB!
+    </div>
+
+  </div>
+
+  <!-- Ding sound -->
+  <audio id="dingSound" src="ding.mp3" preload="auto"></audio>
+
+  <script src="main.js"></script>
+</body>
+</html>
