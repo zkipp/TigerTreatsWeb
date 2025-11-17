@@ -1,12 +1,40 @@
 // ----- CONFIG -----
 const TEACHER_PIN = "0908";
-const STORAGE_KEY = "tigerTreatsOrders_v2";
+const STORAGE_KEY = "tigerTreatsOrders_v3";
+const INVENTORY_KEY = "tigerTreatsInventory_v1";   // <-- NEW: inventory storage key
 
-// Fallback default (used only if no CSV yet)
+// IMAGE MAP: map CSV item names → image filenames
+const IMAGE_MAP = {
+    "Coke": "coke.webp",
+  "Diet Coke": "dietcoke.webp",
+  "Sprite": "sprite.webp",
+  "Cherry Twist": "alani-cherrytwist.webp",
+  "Orange Kiss": "alani-orangekiss.webp",
+  "Pink Slush": "alani-pinkslush.webp",
+
+  "Ruffles": "ruffles.webp",
+  "Classic Lays": "lays-classic.webp",
+  "Lays Sour Cream and Onion": "lays-sourcream.webp",
+  "Fritos": "fritos.webp",
+  "Nacho Cheese Doritos": "doritos.webp",
+  "Cheetos": "cheetos.webp",
+  "Munchies Snack Mix (sun chips, doritos, pretzels, cheetos)": "munchies.webp",
+
+  "Oreos": "oreos.webp",
+  "Chips Ahoy": "chipsahoy.webp",
+  "Nutter Butter (peanut butter)": "nutterbutter.webp",
+  
+  "Beef Jerky Sticks (gluten free)": "beefstick.webp",
+
+  // Fallback image if you want it (make sure default.webp exists)
+  "DEFAULT": "default.webp"
+};
+
+// Fallback default (only used if no saved data AND no CSV yet)
 const defaultOrders = [
   {
     staffName: "Mrs. Kipp",
-    items: ["Cherry Coke", "Alani", "Ruffles"]
+    items: ["Coke", "Oreos", "Ruffles"]
   },
   {
     staffName: "Mr. Kipp",
@@ -17,6 +45,7 @@ const defaultOrders = [
 // ----- STATE -----
 let orders = [];
 let currentOrderIndex = null;
+let inventory = {};   // <-- NEW: holds weekly counts per itemName
 
 // ----- DOM ELEMENTS -----
 const staffListView = document.getElementById("staffListView");
@@ -32,6 +61,11 @@ const teacherButton = document.getElementById("teacherButton");
 const teacherPanel = document.getElementById("teacherPanel");
 const csvInput = document.getElementById("csvInput");
 
+// NEW inventory elements
+const inventoryToggle = document.getElementById("inventoryToggle");
+const inventoryView = document.getElementById("inventoryView");
+const inventoryList = document.getElementById("inventoryList");
+
 const confettiContainer = document.getElementById("confettiContainer");
 const completedBanner = document.getElementById("completedBanner");
 const dingSound = document.getElementById("dingSound");
@@ -41,11 +75,13 @@ init();
 
 function init() {
   loadOrders();
+  loadInventory();    // <-- NEW
+  preloadImages();
   renderStaffList();
   setupHandlers();
 }
 
-// Load from localStorage or defaults
+// ----- LOCAL STORAGE (ORDERS) -----
 function loadOrders() {
   const saved = localStorage.getItem(STORAGE_KEY);
   if (saved) {
@@ -57,7 +93,7 @@ function loadOrders() {
     }
   }
 
-  // fallback
+  // fallback default
   orders = defaultOrders.map(o => ({
     staffName: o.staffName,
     items: o.items,
@@ -68,7 +104,100 @@ function loadOrders() {
 }
 
 function saveOrders() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
+  } catch (e) {
+    console.warn("Could not save orders to localStorage:", e);
+  }
+}
+
+// ----- LOCAL STORAGE (INVENTORY) -----
+function loadInventory() {
+  const saved = localStorage.getItem(INVENTORY_KEY);
+  if (saved) {
+    try {
+      inventory = JSON.parse(saved);
+      return;
+    } catch (e) {
+      console.error("Failed to parse inventory, starting fresh", e);
+    }
+  }
+  inventory = {};
+}
+
+function saveInventory() {
+  try {
+    localStorage.setItem(INVENTORY_KEY, JSON.stringify(inventory));
+  } catch (e) {
+    console.warn("Could not save inventory to localStorage:", e);
+  }
+}
+
+// Increment inventory usage for a given item (A2 behavior: only when it becomes selected)
+function incrementInventory(itemName) {
+  const key = itemName.trim();
+  if (!key) return;
+  inventory[key] = (inventory[key] || 0) + 1;
+  saveInventory();
+}
+
+// Render the inventory view (auto-detected snack list)
+function renderInventoryView() {
+  inventoryList.innerHTML = "";
+
+  const entries = Object.entries(inventory).sort((a, b) =>
+    a[0].localeCompare(b[0])
+  );
+
+  if (!entries.length) {
+    const msg = document.createElement("div");
+    msg.textContent = "No usage recorded yet.";
+    inventoryList.appendChild(msg);
+    return;
+  }
+
+  entries.forEach(([itemName, count]) => {
+    const row = document.createElement("div");
+    row.className = "inventory-row";
+
+    const nameEl = document.createElement("div");
+    nameEl.className = "inventory-item-name";
+    nameEl.textContent = itemName;
+
+    const countEl = document.createElement("div");
+    countEl.className = "inventory-item-count";
+    countEl.textContent = count;
+
+    row.appendChild(nameEl);
+    row.appendChild(countEl);
+
+    inventoryList.appendChild(row);
+  });
+}
+
+// ----- IMAGE PRELOAD (WebP) -----
+function preloadImages() {
+  const loaded = new Set();
+
+  orders.forEach(order => {
+    order.items.forEach(item => {
+      const keyName = item.trim();
+      const mapped = IMAGE_MAP[keyName];
+      let filename;
+
+      if (mapped) {
+        filename = mapped;
+      } else {
+        filename = keyName.toLowerCase().replace(/\s+/g, "") + ".webp";
+      }
+
+      if (!loaded.has(filename)) {
+        loaded.add(filename);
+        const img = new Image();
+        img.src = `images/${filename}`;
+      }
+    });
+  });
 }
 
 // ----- STAFF LIST RENDERING -----
@@ -122,9 +251,19 @@ function renderItemsGrid(order) {
     const img = document.createElement("img");
     img.className = "item-image";
 
-    const imageName = itemName.toLowerCase().replace(/\s+/g, "");
-    img.src = `images/${imageName}.png`;
+    const keyName = itemName.trim();
+    const mapped = IMAGE_MAP[keyName];
+
+    let filename;
+    if (mapped) {
+      filename = mapped;
+    } else {
+      filename = keyName.toLowerCase().replace(/\s+/g, "") + ".webp";
+    }
+
+    img.src = `images/${filename}`;
     img.alt = itemName;
+    img.loading = "lazy";
 
     const label = document.createElement("div");
     label.className = "item-name";
@@ -134,7 +273,14 @@ function renderItemsGrid(order) {
     tile.appendChild(label);
 
     tile.addEventListener("click", () => {
+      const wasSelected = order.itemsCompleted[idx];  // A2: check BEFORE toggle
       order.itemsCompleted[idx] = !order.itemsCompleted[idx];
+
+      // If it just became selected, count it in inventory
+      if (!wasSelected && order.itemsCompleted[idx]) {
+        incrementInventory(itemName);
+      }
+
       playDing();
       renderItemsGrid(order);
       checkOrderCompletion(order);
@@ -169,15 +315,37 @@ function setupHandlers() {
 
   resetButton.addEventListener("click", () => {
     requireTeacherPin(() => {
-      if (!confirm("Reset all orders?")) return;
+      if (!confirm("Reset all orders AND inventory?")) return;
+      // Reset orders
       localStorage.removeItem(STORAGE_KEY);
       loadOrders();
+      // Reset inventory
+      localStorage.removeItem(INVENTORY_KEY);
+      loadInventory();
+      // UI updates
+      preloadImages();
       renderStaffList();
+      if (inventoryView && !inventoryView.classList.contains("hidden")) {
+        renderInventoryView();
+      }
       orderDetailView.classList.add("hidden");
       staffListView.classList.remove("hidden");
       csvInput.value = "";
     });
   });
+
+  if (inventoryToggle) {
+    inventoryToggle.addEventListener("click", () => {
+      if (inventoryView.classList.contains("hidden")) {
+        renderInventoryView();
+        inventoryView.classList.remove("hidden");
+        inventoryToggle.textContent = "Hide Weekly Inventory";
+      } else {
+        inventoryView.classList.add("hidden");
+        inventoryToggle.textContent = "Show Weekly Inventory";
+      }
+    });
+  }
 
   csvInput.addEventListener("change", event => {
     const file = event.target.files[0];
@@ -189,11 +357,12 @@ function setupHandlers() {
         const text = e.target.result;
         const parsed = parseCsvToOrders(text);
         if (!parsed.length) {
-          alert("No valid rows found in CSV. Make sure the first column is Staff and the rest are items.");
+          alert("No valid rows found in CSV. Make sure there is a 'Name' column and item columns after it.");
           return;
         }
         orders = parsed;
         saveOrders();
+        preloadImages();
         renderStaffList();
         orderDetailView.classList.add("hidden");
         staffListView.classList.remove("hidden");
@@ -215,29 +384,44 @@ function requireTeacherPin(onSuccess) {
 }
 
 // ----- CSV PARSING -----
-// Expects rows like: Staff,Item1,Item2,Item3,...
+// Supports header with "Name" or "Staff" in ANY column; items follow after.
 function parseCsvToOrders(text) {
-  const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+  const lines = text
+    .split(/\r?\n/)
+    .map(l => l.trim())
+    .filter(l => l.length > 0);
+
   if (!lines.length) return [];
 
-  const rows = lines.map(line => line.split(","));
-  let startIndex = 0;
+  let headerRowIndex = null;
+  let nameColIndex = null;
 
-  // skip header if first cell is "staff"
-  if (rows[0][0] && rows[0][0].toLowerCase() === "staff") {
-    startIndex = 1;
+  // Find header row and "Name"/"Staff" column
+  for (let i = 0; i < lines.length; i++) {
+    const cols = lines[i].split(",").map(x => x.trim());
+    const lower = cols.map(c => c.toLowerCase());
+
+    const idx = lower.findIndex(c => c === "name" || c === "staff");
+    if (idx !== -1) {
+      headerRowIndex = i;
+      nameColIndex = idx;
+      break;
+    }
+  }
+
+  if (headerRowIndex === null || nameColIndex === null) {
+    alert("CSV must contain a header row with a column named 'Name'.");
+    return [];
   }
 
   const result = [];
 
-  for (let i = startIndex; i < rows.length; i++) {
-    const cols = rows[i];
-    if (!cols.length) continue;
-
-    const staffName = (cols[0] || "").trim();
+  for (let i = headerRowIndex + 1; i < lines.length; i++) {
+    const cols = lines[i].split(",").map(x => x.trim());
+    const staffName = cols[nameColIndex] || "";
     if (!staffName) continue;
 
-    const items = cols.slice(1).map(c => c.trim()).filter(Boolean);
+    const items = cols.slice(nameColIndex + 1).filter(Boolean);
     if (!items.length) continue;
 
     result.push({

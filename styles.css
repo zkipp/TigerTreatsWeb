@@ -1,96 +1,98 @@
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
-
+/* ========= GLOBAL ========= */
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro", sans-serif;
-  background: #ffe9c4;
-}
-
-.app-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
-  background: linear-gradient(90deg, #ff9800, #ffb74d);
-  color: white;
-  position: sticky;
-  top: 0;
-  z-index: 5;
-}
-
-.app-header h1 {
-  margin: 0;
-  font-size: 28px;
-}
-
-.teacher-button {
-  background: white;
-  color: #ff9800;
-  border: none;
-  border-radius: 20px;
-  padding: 8px 14px;
-  font-weight: 600;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-.teacher-panel {
-  background: #fff8e1;
-  padding: 10px 20px 14px;
-  border-bottom: 1px solid rgba(0,0,0,0.1);
-}
-
-.teacher-label {
-  font-weight: 600;
-  display: inline-block;
-  margin-bottom: 4px;
-}
-
-.teacher-hint {
-  margin: 4px 0 0;
-  font-size: 12px;
-  color: #555;
-}
-
-.reset-button {
-  margin-top: 8px;
-  background: #f44336;
-  color: white;
-  border: none;
-  border-radius: 20px;
-  padding: 6px 14px;
-  font-weight: 600;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-.view {
-  padding: 20px;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  background: #fff;
+  color: #333;
 }
 
 .hidden {
   display: none;
 }
 
-/* STAFF LIST */
-
-.staff-card-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 16px;
+.view {
+  padding-top: 70px; /* space for the top bar */
 }
 
-.staff-card {
-  background: white;
-  border-radius: 18px;
-  padding: 18px 20px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+
+/* ========= TOP BAR ========= */
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #ffa726;
+  color: white;
+  padding: 10px 12px;
+  z-index: 1000;
+
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  align-items: center;
+}
+
+/* left spacer so the title can truly center */
+.top-bar-left-space {
+  width: 110px; /* same as teacher button width for symmetry */
+}
+
+/* centered title */
+.title {
+  flex: 1;
+  margin: 0;
+  text-align: center;
+  font-size: 32px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* Teacher button on the right, not cut off */
+.teacher-button {
+  width: 110px;
+  text-align: center;
+  background: #ef6c00;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
   cursor: pointer;
-  border: 3px solid transparent;
+  white-space: nowrap;
+  margin-left: 8px;   /* tiny gap from the edge of the title */
+  margin-right: 20px;  /* space from the right screen edge so it isn't cut off */
+}
+
+.teacher-button:hover {
+  background: #e65100;
+}
+
+/* keep your content pushed below the fixed bar */
+.view {
+  padding-top: 70px;
+}
+
+
+
+/* ========= STAFF LIST ========= */
+.staff-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 18px;
+  padding: 20px;
+}
+
+/* Individual staff card */
+.staff-card {
+  background: #fff3e0;
+  border-radius: 16px;
+  padding: 16px;
+  border: 2px solid transparent;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+  cursor: pointer;
+  transition: transform 0.1s ease, border 0.2s ease;
+}
+
+.staff-card:hover {
+  transform: scale(1.02);
 }
 
 .staff-card.completed {
@@ -98,125 +100,236 @@ body {
   background: #e8f5e9;
 }
 
+/* Staff card text */
 .staff-name {
   font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 4px;
+  font-weight: bold;
+  margin-bottom: 6px;
 }
 
 .staff-subtitle {
   font-size: 14px;
-  color: #666;
+  opacity: 0.7;
 }
 
 .staff-status {
-  margin-top: 10px;
+  margin-top: 8px;
+  font-size: 14px;
   font-weight: 600;
-  color: #ff9800;
 }
 
-.staff-card.completed .staff-status {
-  color: #4caf50;
-}
 
-/* DETAIL VIEW */
-
-.detail-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
+/* ========= DETAIL VIEW ========= */
 .back-button {
-  background: white;
-  border-radius: 999px;
+  margin: 12px;
+  padding: 8px 16px;
+  background: #ef6c00;
   border: none;
-  padding: 8px 14px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  font-weight: 600;
+  border-radius: 10px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
 }
 
-.detail-header h2 {
-  margin: 0;
-  font-size: 26px;
+.back-button:hover {
+  background: #e65100;
 }
 
+.detail-name {
+  text-align: center;
+  margin: 4px 0 16px 0;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+/* Snack grid */
 .items-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  padding: 10px 20px 40px;
 }
 
+/* Snack tile */
 .item-tile {
-  background: white;
-  border-radius: 20px;
-  padding: 14px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 10px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
   text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-  border: 4px solid transparent;
-  transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, border-color 0.15s;
+  border: 3px solid transparent;
+  transition: transform 0.12s ease, border 0.2s ease;
+  cursor: pointer;
 }
 
 .item-tile.selected {
   border-color: #4caf50;
-  box-shadow: 0 0 15px rgba(76,175,80,0.6);
-  transform: scale(1.03);
+  background: #e8f5e9;
+  transform: scale(1.02);
 }
 
+/* Snack image */
 .item-image {
-  width: 120px;
-  height: 120px;
+  width: 100%;
+  height: 140px;
   object-fit: contain;
-  display: block;
-  margin: 0 auto 8px;
 }
 
+/* Snack name */
 .item-name {
+  margin-top: 6px;
+  font-size: 16px;
   font-weight: 600;
-  color: #222;
 }
 
-/* COMPLETED BANNER */
 
-.completed-banner {
-  position: fixed;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  color: #4caf50;
-  padding: 20px 26px;
-  border-radius: 24px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-  font-size: 24px;
-  font-weight: 800;
-  text-align: center;
-  z-index: 20;
+/* ========= TEACHER PANEL ========= */
+.teacher-panel {
+  padding: 16px;
+  background: #fff8e1;
+  border-top: 3px solid #ef6c00;
 }
 
-/* CONFETTI */
+.teacher-title {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 22px;
+  font-weight: 700;
+}
 
+.teacher-label {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.teacher-hint {
+  margin-top: 4px;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* Reset button */
+.reset-button {
+  display: block;
+  width: 100%;
+  margin: 16px 0 10px 0;
+  padding: 10px 14px;
+  background: #c62828;
+  color: white;
+  border-radius: 10px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.reset-button:hover {
+  background: #b71c1c;
+}
+
+
+/* Inventory toggle */
+.inventory-button {
+  background: #ef6c00;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-block;
+  min-width: 220px; /* fits full text */
+}
+
+.inventory-button:hover {
+  background: #e65100;
+}
+
+.teacher-button:hover {
+  background: #e65100;
+}
+
+
+/* ========= INVENTORY PANEL ========= */
+.inventory-view {
+  margin-top: 10px;
+  padding: 12px;
+  background: #ffe0b2;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+.inventory-title {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #bf360c;
+}
+
+.inventory-list {
+  font-size: 15px;
+}
+
+.inventory-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 0;
+}
+
+.inventory-item-name {
+  font-weight: 600;
+}
+
+.inventory-item-count {
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* ========= CONFETTI ========= */
 .confetti-container {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
   overflow: hidden;
-  z-index: 15;
+  z-index: 2000;
 }
 
 .confetti-piece {
   position: absolute;
   width: 10px;
-  height: 18px;
+  height: 10px;
   opacity: 0.9;
-  border-radius: 2px;
   animation: fall linear forwards;
 }
 
 @keyframes fall {
-  to {
-    transform: translateY(110vh) rotateZ(360deg);
-    opacity: 0;
+  from {
+    transform: translateY(-20px) rotate(0deg);
   }
+  to {
+    transform: translateY(100vh) rotate(720deg);
+  }
+}
+
+
+/* ========= COMPLETION BANNER ========= */
+.completed-banner {
+  position: fixed;
+  top: 25%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 20px 30px;
+  border-radius: 18px;
+  border: 3px solid #4caf50;
+  color: #4caf50;
+  font-size: 28px;
+  font-weight: 800;
+  z-index: 2100;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
