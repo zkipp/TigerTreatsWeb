@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tiger Treats</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- TOP BAR WITH TITLE + TEACHER BUTTON -->
+<header class="top-bar">
+  <div class="top-bar-left-space"></div>
+
+  <h1 class="title">🐯 Tiger Treats</h1>
+
+  <button id="teacherButton" class="teacher-button">Teacher</button>
+</header>
+
+
+
+
+  <!-- STAFF LIST VIEW -->
+  <section id="staffListView" class="view">
+    <div id="staffCards" class="staff-cards"></div>
+  </section>
+
+
+  <!-- ORDER DETAIL VIEW -->
+  <section id="orderDetailView" class="view hidden">
+    <button id="backButton" class="back-button">← Back</button>
+    <h2 id="detailStaffName" class="detail-name"></h2>
+    <div id="itemsGrid" class="items-grid"></div>
+  </section>
+
+
+  <!-- TEACHER PANEL -->
+  <section id="teacherPanel" class="teacher-panel hidden">
+    <h2 class="teacher-title">Teacher Controls</h2>
+
+    <label class="teacher-label">
+      Load Orders CSV:
+      <input type="file" id="csvInput" accept=".csv" />
+    </label>
+
+    <p class="teacher-hint">
+      Format: <code>Name,Item1,Item2,Item3,...</code>
+    </p>
+
+    <button id="resetButton" class="reset-button">
+      Reset All Orders & Inventory
+    </button>
+
+    <button id="inventoryToggle" class="inventory-button">Show Weekly Inventory</button>
+
+<button id="newOrderButton" class="teacher-action-btn" onclick="console.log('BUTTON CLICKED')">
+  ➕ Add New Order
+</button>
+
+
+<div id="newOrderPanel" class="hidden new-order-panel">
+  <h3>Create New Order</h3>
+
+  <label>Staff Name:</label>
+  <input type="text" id="newOrderName" placeholder="Enter name">
+
+  <div id="newOrderItemsGrid" class="items-grid small"></div>
+
+  <button id="saveNewOrderButton" class="save-btn">Save Order</button>
+</div>
+
+
+    <!-- INVENTORY PANEL -->
+    <div id="inventoryView" class="inventory-view hidden">
+      <h3 class="inventory-title">Weekly Inventory Usage</h3>
+      <div id="inventoryList" class="inventory-list"></div>
+    </div>
+  </section>
+
+
+  <!-- CONFETTI -->
+  <div id="confettiContainer" class="confetti-container hidden"></div>
+
+  <!-- COMPLETION BANNER -->
+  <div id="completedBanner" class="completed-banner hidden">
+    ORDER COMPLETED! GREAT JOB!
+  </div>
+
+  <!-- SOUND -->
+  <audio id="dingSound" src="ding.mp3" preload="auto"></audio>
+
+  <!-- JS -->
+  <script src="main.js"></script>
+
+</body>
+</html>
