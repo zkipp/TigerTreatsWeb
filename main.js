@@ -33,7 +33,7 @@ const IMAGE_MAP = {
   "Nutter Butter (peanut butter)": "nutterbutter.webp",
   "Birthday Cake Drizzilicious": "drizz-birthdaycake.webp",
   "French Toast Drizzilicious": "drizz-frenchtoast.webp",  
-  "Cookies and Cream Drizziliciuss": "drizz-cookiesandcream.webp",    
+  "Cookies and Cream Drizziliciuos": "drizz-cookiesandcream.webp",    
 
   "Beef Jerky Sticks (gluten free)": "beefstick.webp",
 
