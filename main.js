@@ -14,6 +14,7 @@ const IMAGE_MAP = {
   "Blue Slush": "alani-blueslush.webp",
   "Sherbet Swirl": "alani-sherbetswirl.webp",
   "Cotton Candy": "alani-cottoncandy.webp",
+  "Strawberry Sunrise": "alani-strawberrysunrise.webp",
 
   "Ruffles": "ruffles.webp",
   "Classic Lays": "lays-classic.webp",
@@ -25,11 +26,15 @@ const IMAGE_MAP = {
   "Pringles": "pringles.webp",
   "Cheezits": "cheez-it.webp", 
   "Rice Krispie Treat": "rice-krispies.webp",
+  "SkinnyPop Popcorn": "skinnypop.webp",
 
   "Oreos": "oreos.webp",
   "Chips Ahoy": "chipsahoy.webp", 
   "Nutter Butter (peanut butter)": "nutterbutter.webp",
-  
+  "Birthday Cake Drizzilicious": "drizz-birthdaycake.webp",
+  "French Toast Drizzilicious": "drizz-frenchtoast.webp",  
+  "Cookies and Cream Drizziliciuss": "drizz-cookiesandcream.webp",    
+
   "Beef Jerky Sticks (gluten free)": "beefstick.webp",
 
   // Fallback image if you want it (make sure default.webp exists)
